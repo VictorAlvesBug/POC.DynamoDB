@@ -1,11 +1,6 @@
-﻿using POC.DynamoDB.Application.Dtos;
+﻿using Amazon.DynamoDBv2.DataModel;
 using POC.DynamoDB.Domain.Models.Entities;
 using POC.DynamoDB.Infrastructure.Interfaces;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DocumentModel;
-using Microsoft.AspNetCore.Http;
-using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.Model;
 
 namespace POC.DynamoDB.Infrastructure.Repositories
 {
@@ -16,6 +11,15 @@ namespace POC.DynamoDB.Infrastructure.Repositories
 		public ProductRepository(IDynamoDBContext context)
 		{
 			_context = context;
+		}
+
+		public virtual async Task<ProductEntity> GetByPkAsync(string pk)
+		{
+			DynamoDBOperationConfig operationConfig = new DynamoDBOperationConfig();
+
+			var items = await _context.QueryAsync<ProductEntity>(pk, operationConfig).GetNextSetAsync();
+
+			return items.FirstOrDefault();
 		}
 
 		public virtual async Task<ProductEntity> GetByPkAndSkAsync(string pk, string sk)

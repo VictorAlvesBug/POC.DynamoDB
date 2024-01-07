@@ -7,6 +7,11 @@ namespace POC.DynamoDB.Helpers.Extentions
 	{
 		public static ProductDto ToDto(this ProductEntity productEntity)
 		{
+			if (productEntity is null)
+			{
+				return null;
+			}
+
 			return new ProductDto
 			{
 				PK = productEntity.PK,
@@ -15,6 +20,11 @@ namespace POC.DynamoDB.Helpers.Extentions
 				QuantityInStock = productEntity.QuantityInStock,
 				Image = productEntity.Image
 			};
+		}
+
+		public static IEnumerable<ProductDto> ToDto(this IEnumerable<ProductEntity> productsEntity)
+		{
+			return productsEntity.Select(ToDto);
 		}
 	}
 }

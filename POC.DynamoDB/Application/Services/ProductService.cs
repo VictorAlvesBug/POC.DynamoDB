@@ -3,7 +3,6 @@ using POC.DynamoDB.Application.Interfaces;
 using POC.DynamoDB.Domain.Models.Entities;
 using POC.DynamoDB.Helpers.Extentions;
 using POC.DynamoDB.Infrastructure.Interfaces;
-using POC.DynamoDB.Infrastructure.Repositories;
 
 namespace POC.DynamoDB.Application.Services
 {
@@ -15,6 +14,11 @@ namespace POC.DynamoDB.Application.Services
         {
 			_productRepository = productRepository;
         }
+
+		public async Task<ProductDto> GetByPkAsync(string pk)
+		{
+			return (await _productRepository.GetByPkAsync(pk)).ToDto();
+		}
 
         public async Task<ProductDto> GetByPkAndSkAsync(string pk, string sk)
 		{

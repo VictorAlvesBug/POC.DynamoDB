@@ -5,7 +5,10 @@ namespace POC.DynamoDB.Domain.Models.Entities
 	[DynamoDBTable("poc-product")]
 	public class ProductEntity
 	{
+		[DynamoDBHashKey]
 		public string PK { get; set; }
+
+		[DynamoDBRangeKey]
 		public string SK { get; set; }
 		public decimal Price { get; set; }
 		public int QuantityInStock { get; set; }

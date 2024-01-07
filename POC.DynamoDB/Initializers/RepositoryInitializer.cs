@@ -1,6 +1,4 @@
-﻿using POC.DynamoDB.Application.Interfaces;
-using POC.DynamoDB.Application.Services;
-using POC.DynamoDB.Domain.Models.Entities;
+﻿using POC.DynamoDB.Domain.Models.Entities;
 using POC.DynamoDB.Infrastructure.Interfaces;
 using POC.DynamoDB.Infrastructure.Repositories;
 
