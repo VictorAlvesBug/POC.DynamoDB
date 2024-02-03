@@ -1,8 +1,7 @@
-﻿using POC.DynamoDB.Application.Dtos;
+﻿using Microsoft.AspNetCore.Mvc;
+using POC.DynamoDB.Application.Dtos;
 using POC.DynamoDB.Application.Interfaces;
 using POC.DynamoDB.Helpers;
-using POC.DynamoDB.Infrastructure.Database.Models;
-using POC.DynamoDB.Infrastructure.Database.Models.PrimitiveTypes;
 
 namespace POC.DynamoDB.Routers
 {
@@ -10,46 +9,37 @@ namespace POC.DynamoDB.Routers
 	{
 		public static RouteGroup MapProducts(this RouteGroup group)
 		{
-			group.MapGet("/", GetByPkAsync);
-			group.MapGet("/SetValueString", SetValueString);
-			group.MapGet("/SetValueNumber", SetValueNumber);
-			group.MapGet("/SetValueBoolean", SetValueBoolean);
-
+			group.MapGet($"/{nameof(GetAll)}", GetAll);
+			group.MapGet($"/{nameof(Get)}", Get);
+			group.MapPost($"/{nameof(Create)}", Create);
+			group.MapPost($"/{nameof(Update)}", Update);
+			group.MapDelete($"/{nameof(Delete)}", Delete);
 			return group;
 		}
 
-		public static async Task<string> SetValueString(string value)
+		public static async Task<IEnumerable<ProductDto>> GetAll(IProductService service)
 		{
-			var a = new PartitionKey<PrimitiveString>("");
-			a.Set(value);
-			var x = a.Get();
-			return x.Value;
+			return await service.GetAsync();
 		}
 
-		public static async Task<decimal> SetValueNumber(decimal value) 
-		{ 
-			var a = new PartitionKey<PrimitiveNumber>(0);
-			a.Set(value);
-			var x = a.Get();
-			return x.Value;
+		public static async Task<ProductDto> Get(string pk, string sk, IProductService service)
+		{
+			return await service.GetAsync(pk, sk);
 		}
 
-		public static async Task<bool> SetValueBoolean(bool value)
+		public static async Task<ProductDto> Create([FromBody] ProductToCreateDto productToCreateDto, IProductService service)
 		{
-			var a = new PartitionKey<PrimitiveBoolean>(false);
-			a.Set(value);
-			var x = a.Get();
-			return x.Value;
+			return await service.CreateAsync(productToCreateDto);
 		}
 
-		public static async Task<ProductDto> GetByPkAsync(string pk, IProductService service)
+		public static async Task<ProductDto> Update([FromBody] ProductToUpdateDto productToUpdateDto, IProductService service)
 		{
-			return await service.GetByPkAsync(pk);
+			return await service.UpdateAsync(productToUpdateDto);
 		}
 
-		public static async Task<ProductDto> GetByPkAndSkAsync(string pk, string sk, IProductService service)
+		public static async Task<bool> Delete(string pk, string sk, IProductService service)
 		{
-			return await service.GetByPkAndSkAsync(pk, sk);
+			return await service.DeleteAsync(pk, sk);
 		}
 	}
 }

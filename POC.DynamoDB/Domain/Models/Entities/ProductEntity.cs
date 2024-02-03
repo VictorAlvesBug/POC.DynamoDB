@@ -2,16 +2,18 @@
 
 namespace POC.DynamoDB.Domain.Models.Entities
 {
-	[DynamoDBTable("poc-product")]
+	//[DynamoDBTable("poc-product")]
 	public class ProductEntity
 	{
-		[DynamoDBHashKey]
+		//[DynamoDBHashKey]
 		public string PK { get; set; }
 
-		[DynamoDBRangeKey]
+		//[DynamoDBRangeKey]
 		public string SK { get; set; }
+		public string Item { get; set; }
+		public string Category { get; set; }
 		public decimal Price { get; set; }
 		public int QuantityInStock { get; set; }
-		public string? Image { get; set; }
+		public string Image { get; set; }
 	}
 }

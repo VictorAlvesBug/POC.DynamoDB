@@ -1,71 +1,69 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DocumentModel;
+using Amazon.DynamoDBv2.Model;
 using POC.DynamoDB.Domain.Models.Entities;
 using POC.DynamoDB.Infrastructure.Interfaces;
+using POC.DynamoDB.Helpers.Extensions;
+using POC.DynamoDB.Helpers.Utils;
 
 namespace POC.DynamoDB.Infrastructure.Repositories
 {
 	public class ProductRepository : IRepository<ProductEntity>
 	{
 		private readonly IDynamoDBContext _context;
+		private readonly string _tableName = "poc-product";
+		private readonly Table _table;
 
 		public ProductRepository(IDynamoDBContext context)
 		{
 			_context = context;
+			_table = DynamoUtils.GetTable(_tableName);
 		}
 
-		public virtual async Task<ProductEntity> GetByPkAsync(string pk)
+		public virtual async Task<IEnumerable<ProductEntity>> GetAsync()
 		{
-			DynamoDBOperationConfig operationConfig = new DynamoDBOperationConfig();
+			ScanFilter filter = new ScanFilter();
 
-			var items = await _context.QueryAsync<ProductEntity>(pk, operationConfig).GetNextSetAsync();
+			Search search = _table.Scan(filter);
+			List<Document> results = await search.GetNextSetAsync();
 
-			return items.FirstOrDefault();
+			return results.ConvertTo<ProductEntity>();
 		}
 
-		public virtual async Task<ProductEntity> GetByPkAndSkAsync(string pk, string sk)
+		public virtual async Task<ProductEntity> GetAsync(string pk, string sk)
 		{
-			return await _context.LoadAsync<ProductEntity>(pk, sk);
+			QueryFilter filter = new QueryFilter("PK", QueryOperator.Equal, pk);
+			filter.AddCondition("SK", QueryOperator.Equal, sk);
+
+			QueryOperationConfig queryConfig = new QueryOperationConfig
+			{
+				Filter = filter
+			};
+
+			Search search = _table.Query(queryConfig);
+			List<Document> results = await search.GetNextSetAsync();
+
+			return results.ConvertTo<ProductEntity>().FirstOrDefault();
 		}
 
-		/*
-		 
-		var client = new AmazonDynamoDBClient();
+		public virtual async Task<ProductEntity> CreateAsync(ProductEntity productEntity)
+		{
+			Document document = productEntity.ToDocument();
 
+			await _table.PutItemAsync(document);
 
+			return productEntity;
+		}
 
-			var tableName = "poc-product";
-			var primaryKeyValue = "Item-5cf0370f0b2a43ddb8a45c6fbe7c1d97";
+		public virtual async Task<ProductEntity> UpdateAsync(ProductEntity entity)
+		{
+			throw new NotImplementedException();
+		}
 
-			var sortKeyValue = "Notebook Dell Inspiron 15";
-
-			var table = Table.LoadTable(client, tableName);
-
-			var queryFilter = new QueryFilter();
-			queryFilter.AddCondition("PK", QueryOperator.Equal, primaryKeyValue);
-			queryFilter.AddCondition("SK", QueryOperator.Equal, sortKeyValue);
-			queryFilter.AddCondition("QuantityInStock", QueryOperator.Equal, "100");
-
-			var search = table.Query(queryFilter);
-
-			List<Document> items = new List<Document>();
-			do
-			{
-				var set = await search.GetNextSetAsync();
-				items.AddRange(set);
-			} while (!search.IsDone);
-
-			foreach (var item in items)
-			{
-				// Processar os itens retornados
-				var itemData = item.ToJsonPretty();
-				Console.WriteLine(itemData);
-			}
-
-
-
-			return new ProductEntity { PK = pk, SK = sk };
-		 
-		 */
-
+		public virtual async Task<bool> DeleteAsync(string pk, string sk)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

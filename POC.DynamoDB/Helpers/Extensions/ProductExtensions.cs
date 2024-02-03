@@ -1,9 +1,9 @@
 ﻿using POC.DynamoDB.Application.Dtos;
 using POC.DynamoDB.Domain.Models.Entities;
 
-namespace POC.DynamoDB.Helpers.Extentions
+namespace POC.DynamoDB.Helpers.Extensions
 {
-	public static class ProductExtentions
+	public static class ProductExtensions
 	{
 		public static ProductDto ToDto(this ProductEntity productEntity)
 		{

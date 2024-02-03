@@ -1,4 +1,4 @@
-﻿using POC.DynamoDB.Helpers.Extentions;
+﻿using POC.DynamoDB.Helpers.Extensions;
 
 namespace POC.DynamoDB.Routers
 {

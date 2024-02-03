@@ -2,7 +2,10 @@
 {
 	public interface IRepository<TEntity> where TEntity : class
 	{
-		Task<TEntity> GetByPkAsync(string pk);
-		Task<TEntity> GetByPkAndSkAsync(string pk, string sk);
+		Task<IEnumerable<TEntity>> GetAsync();
+		Task<TEntity> GetAsync(string pk, string sk);
+		Task<TEntity> CreateAsync(TEntity entity);
+		Task<TEntity> UpdateAsync(TEntity entity);
+		Task<bool> DeleteAsync(string pk, string sk);
 	}
 }

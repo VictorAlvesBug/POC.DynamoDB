@@ -1,6 +1,6 @@
-﻿namespace POC.DynamoDB.Helpers.Extentions
+﻿namespace POC.DynamoDB.Helpers.Extensions
 {
-	public static class RouteExtentions
+	public static class RouteExtensions
 	{
 		public static RouteGroup MapRoute(
 			this WebApplication app,
