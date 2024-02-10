@@ -9,6 +9,6 @@ namespace POC.DynamoDB.Application.Interfaces
 		Task<ProductDto> GetAsync(string pk, string sk);
 		Task<ProductDto> CreateAsync(ProductToCreateDto productToCreateDto);
 		Task<ProductDto> UpdateAsync(ProductToUpdateDto productToUpdateDto);
-		Task<bool> DeleteAsync(string pk, string sk);
+		Task DeleteAsync(string pk, string sk);
 	}
 }

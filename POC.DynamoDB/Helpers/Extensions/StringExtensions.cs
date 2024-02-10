@@ -10,14 +10,14 @@ namespace POC.DynamoDB.Helpers.Extensions
 			return string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text);
 		}
 
-		public static string RemoverAcentos(this string texto)
+		public static string RemoverAcentos(this string text)
 		{
-			if (string.IsNullOrEmpty(texto))
+			if (string.IsNullOrEmpty(text))
 			{
-				return texto;
+				return text;
 			}
 
-			string normalizedString = texto.Normalize(NormalizationForm.FormD);
+			string normalizedString = text.Normalize(NormalizationForm.FormD);
 			StringBuilder sb = new StringBuilder();
 
 			foreach (char c in normalizedString)
@@ -30,5 +30,9 @@ namespace POC.DynamoDB.Helpers.Extensions
 
 			return sb.ToString().Normalize(NormalizationForm.FormC);
 		}
+
+		public static bool In(this string text, params string[] items) => items.Any(item => text == item);
+
+		public static bool NotIn(this string text, params string[] items) => !text.In(items);
 	}
 }

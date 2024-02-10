@@ -1,4 +1,5 @@
-﻿using POC.DynamoDB.Application.Dtos;
+﻿using Microsoft.Extensions.Options;
+using POC.DynamoDB.Application.Dtos;
 using POC.DynamoDB.Application.Interfaces;
 using POC.DynamoDB.Domain.Models.Entities;
 using POC.DynamoDB.Helpers.Extensions;
@@ -17,7 +18,7 @@ namespace POC.DynamoDB.Application.Services
 
 		public async Task<IEnumerable<ProductDto>> GetAsync()
 		{
-			return (await _productRepository.GetAsync())
+			return (await _productRepository.GetAllAsync())
 				.ConvertTo<ProductDto>();
 		}
 
@@ -26,7 +27,7 @@ namespace POC.DynamoDB.Application.Services
 			if (pk == null) throw new ArgumentException($"O argumento '{nameof(pk)}' é obrigatório");
 			if (sk == null) throw new ArgumentException($"O argumento '{nameof(sk)}' é obrigatório");
 
-			return (await _productRepository.GetAsync(pk, sk))
+			return (await _productRepository.GetSingleAsync(pk, sk))
 				.ConvertTo<ProductDto>();
 		}
 
@@ -36,7 +37,7 @@ namespace POC.DynamoDB.Application.Services
 			productToCreateDto.Validate();
 
 			var productEntity = productToCreateDto.ConvertTo<ProductEntity>();
-			return (await _productRepository.CreateAsync(productEntity))
+			return (await _productRepository.CreateItemAsync(productEntity))
 				.ConvertTo<ProductDto>();
 		}
 
@@ -46,16 +47,17 @@ namespace POC.DynamoDB.Application.Services
 			productToUpdateDto.Validate();
 
 			var productEntity = productToUpdateDto.ConvertTo<ProductEntity>();
-			return (await _productRepository.UpdateAsync(productEntity))
+
+			return (await _productRepository.UpdatePartialItemAsync(productEntity))
 				.ConvertTo<ProductDto>();
 		}
 
-		public async Task<bool> DeleteAsync(string pk, string sk)
+		public async Task DeleteAsync(string pk, string sk)
 		{
 			if (pk == null) throw new ArgumentException($"O argumento '{nameof(pk)}' é obrigatório");
 			if (sk == null) throw new ArgumentException($"O argumento '{nameof(sk)}' é obrigatório");
 
-			return await _productRepository.DeleteAsync(pk, sk);
+			await _productRepository.DeleteAsync(pk, sk);
 		}
 	}
 }

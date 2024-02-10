@@ -37,9 +37,9 @@ namespace POC.DynamoDB.Routers
 			return await service.UpdateAsync(productToUpdateDto);
 		}
 
-		public static async Task<bool> Delete(string pk, string sk, IProductService service)
+		public static async Task Delete(string pk, string sk, IProductService service)
 		{
-			return await service.DeleteAsync(pk, sk);
+			await service.DeleteAsync(pk, sk);
 		}
 	}
 }

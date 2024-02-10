@@ -17,7 +17,7 @@ namespace POC.DynamoDB.Infrastructure.Database
 			if (prefix.IsNullOrEmptyOrBlankSpace())
 				return Hyphenize(parts);
 
-			return Hyphenize(prefix, Hyphenize(parts));
+			return $"{prefix}-{Hyphenize(parts)}";
 		}
 	}
 }

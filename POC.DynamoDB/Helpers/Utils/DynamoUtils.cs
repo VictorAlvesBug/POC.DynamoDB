@@ -7,6 +7,17 @@ namespace POC.DynamoDB.Helpers.Utils
 	{
 		public static Table GetTable(string tableName)
 		{
+			
+			Table table = Table.LoadTable(GetClient(), tableName);
+
+			if (table == null)
+				throw new Exception("Tabela não encontrada no DynamoDB");
+
+			return table;
+		}
+
+		public static AmazonDynamoDBClient GetClient()
+		{
 			var _awsAccessKey = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY");
 			var _awsSecretKey = Environment.GetEnvironmentVariable("AWS_SECRET_KEY");
 
@@ -15,13 +26,7 @@ namespace POC.DynamoDB.Helpers.Utils
 				RegionEndpoint = Amazon.RegionEndpoint.SAEast1
 			};
 
-			var client = new AmazonDynamoDBClient(_awsAccessKey, _awsSecretKey, config);
-			Table table = Table.LoadTable(client, tableName);
-
-			if (table == null)
-				throw new Exception("Tabela não encontrada no DynamoDB");
-
-			return table;
+			return new AmazonDynamoDBClient(_awsAccessKey, _awsSecretKey, config);
 		}
 	}
 }
